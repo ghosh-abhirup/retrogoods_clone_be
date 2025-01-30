@@ -19,7 +19,8 @@ const getSpecificProduct = asyncHandler(async (req: Request, res: Response) => {
         include: {
             provider: true,
             productLots: true,
-        }
+        },
+
     })
 
     if (!product) {

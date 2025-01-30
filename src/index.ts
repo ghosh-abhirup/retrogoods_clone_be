@@ -15,9 +15,11 @@ app.use(cookieParser())
 // routes
 import userRouter from "./routes/userRoutes.ts";
 import productRouter from "./routes/productRoutes.ts";
+import orderRouter from "./routes/orderRoutes.ts";
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
+app.use("/api/v1/orders", orderRouter);
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);

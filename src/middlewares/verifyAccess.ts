@@ -17,10 +17,15 @@ export const verifyAccess = asyncHandler(async (req: MiddlewareRequest, res: Res
 
         const decodedInfo = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
+
         const user = await prisma.user.findFirst({
             where: {
                 id: decodedInfo.id
-            }
+            },
+            // omit:{
+            //     password: true,
+            //     refreshToken: true
+            // }
         })
 
         if (!user) {

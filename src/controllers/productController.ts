@@ -32,7 +32,7 @@ const getSpecificProduct = asyncHandler(async (req: Request, res: Response) => {
     })
 })
 
-const addProduct = asyncHandler(async (req: Request, res: Response) => {
+const addProduct = asyncHandler(async (req: MiddlewareRequest, res: Response) => {
     const { productName, sku } = req.body;
     const user = req.user
 

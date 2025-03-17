@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { ApiError } from "../utils/ApiError";
 import prisma from "../utils/client";
 import pagination from "../services/pagination";
+import { MiddlewareRequest } from "../utils/types";
 
 type OrderProductInput = {
     productId: string;
@@ -54,7 +55,7 @@ const getOrder = asyncHandler(async (req: Request, res: Response) => {
 });
 
 
-const createOrder = asyncHandler(async (req: Request, res: Response) => {
+const createOrder = asyncHandler(async (req: MiddlewareRequest, res: Response) => {
     const { orderProducts, address_line_1, address_line_2, pincode }: CreateOrderPayload = req.body
     const customer_id = req.user?.id;
 

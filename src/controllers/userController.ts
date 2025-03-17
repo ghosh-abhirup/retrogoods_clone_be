@@ -39,7 +39,7 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
     const { firstname, lastname, email, password, type }: registerUserType = req.body;
 
     if (
-        !(firstname.trim() && lastname.trim() && email.trim() && password.trim() && type.trim())
+        !(firstname.trim() && lastname.trim() && email.trim() && password.trim() && type)
     ) {
         throw new ApiError(400, 'All fields are required')
     }
@@ -70,7 +70,10 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
         where: {
             id: user.id
         },
-
+        omit: {
+            password: true,
+            refreshToken: true
+        }
     })
 
     if (!createdUser) {
@@ -109,12 +112,23 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
 
     const { accessToken, refreshToken } = await generateAccessAndRefreshToken(userWithEmail)
 
+    const user = await prisma.user.findFirst({
+        where: {
+            id: userWithEmail.id
+        },
+        omit: {
+            password: true,
+            refreshToken: true
+        }
+    })
+
     return res
         .status(200)
         .cookie('accessToken', accessToken)
         .cookie('refreshToken', refreshToken)
         .json({
-            message: "User logged in"
+            message: "User logged in",
+            data: user
         })
 })
 

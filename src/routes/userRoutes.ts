@@ -11,7 +11,7 @@ router.post('/refresh-access-token', refreshAccessToken);
 
 router.put('/:id/edit', verifyAccess, updateUser)
 
-router.get('/:id', verifyAccess, getUser)
+router.get('/profile', verifyAccess, getUser)
 
 router.post('/logout', verifyAccess, logoutHandler);
 

@@ -176,33 +176,23 @@ const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {
 })
 
 const getUser = asyncHandler(async (req: MiddlewareRequest, res: Response) => {
-    const { id } = req.params;
 
-    if (!id) {
-        throw new ApiError(400, 'ID not available')
-    }
-
-    const user = await prisma.user.findFirst({
-        where: {
-            id
-        },
-        include: {
-            wishlist: true,
-            orders: true,
-
-        },
-        omit: {
-            password: true,
-            refreshToken: true
-        }
-    })
+    const user = req.user;
 
     if (!user) {
         throw new ApiError(409, "User doesn't exist")
     }
 
+    const userData = {
+        id: user.id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+
+    }
+
     return res.status(200).json({
-        data: user,
+        data: userData,
     })
 })
 

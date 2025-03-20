@@ -122,10 +122,15 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
         }
     })
 
+
     return res
         .status(200)
-        .cookie('accessToken', accessToken)
-        .cookie('refreshToken', refreshToken)
+        .cookie('accessToken', accessToken, {
+            maxAge: 1 * 24 * 60 * 60 * 1000, // 1 Day
+        })
+        .cookie('refreshToken', refreshToken, {
+            maxAge: 9 * 24 * 60 * 60 * 1000, // 9 Days
+        })
         .json({
             message: "User logged in",
             data: user
@@ -188,7 +193,6 @@ const getUser = asyncHandler(async (req: MiddlewareRequest, res: Response) => {
         firstname: user.firstname,
         lastname: user.lastname,
         email: user.email,
-
     }
 
     return res.status(200).json({

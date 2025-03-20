@@ -10,7 +10,6 @@ export const verifyAccess = asyncHandler(async (req: MiddlewareRequest, res: Res
         const token = req.cookies?.accessToken ||
             req.header("Authorization")?.replace("Bearer ", "") || null;
 
-
         if (!token) {
             throw new ApiError(401, "Unauthorized access token");
         }

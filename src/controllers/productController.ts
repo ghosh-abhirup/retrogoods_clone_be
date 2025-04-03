@@ -32,33 +32,6 @@ const getSpecificProduct = asyncHandler(async (req: Request, res: Response) => {
     })
 })
 
-const addProduct = asyncHandler(async (req: MiddlewareRequest, res: Response) => {
-    const { productName, sku } = req.body;
-    const user = req.user
-
-    if (productName && sku) {
-        throw new ApiError(400, 'All fields are required');
-    }
-
-    try {
-        await prisma.product.create({
-            data: {
-                name: productName,
-                sku: sku,
-                provider: {
-                    connect: { id: user?.id }
-                }
-            }
-        })
-    } catch (error) {
-        throw new ApiError(400, 'Cannot create product');
-    }
-
-    return res.status(200).json({
-        message: "Product created",
-    })
-})
-
 const getProducts = asyncHandler(async (req: Request, res: Response) => {
     const { page } = req.query
 
@@ -108,4 +81,4 @@ const updateProduct = asyncHandler(async (req: Request, res: Response) => {
     })
 })
 
-export { getSpecificProduct, addProduct, getProducts, updateProduct }
+export { getSpecificProduct, getProducts, updateProduct }

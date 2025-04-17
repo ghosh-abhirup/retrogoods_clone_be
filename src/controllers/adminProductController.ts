@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { MiddlewareRequest } from "../utils/types";
 import { ApiError } from "../utils/ApiError";
 import prisma from "../utils/client";
+import pagination from "../services/pagination";
 
 const getAdminProducts = asyncHandler(async (req: MiddlewareRequest, res: Response) => {
     const user = req.user;
@@ -12,7 +13,16 @@ const getAdminProducts = asyncHandler(async (req: MiddlewareRequest, res: Respon
         throw new ApiError(500, "User not found")
     }
 
+
+    const totalCount = await prisma.product.count();
+    const paginationObject = pagination(totalCount, Number(page));
+
     const products = await prisma.product.findMany({
+        skip: paginationObject.skip,
+        take: paginationObject.limit,
+        orderBy: {
+            createdAt: 'desc'
+        },
         where: {
             providerId: user.id,
         }

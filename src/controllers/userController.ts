@@ -227,6 +227,13 @@ const updateUser = asyncHandler(async (req: MiddlewareRequest, res: Response) =>
             firstname,
             lastname,
             email
+        },
+
+        omit: {
+            password: true,
+            refreshToken: true,
+            createdAt: true,
+            type: true
         }
     })
 

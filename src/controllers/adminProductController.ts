@@ -7,12 +7,11 @@ import pagination from "../services/pagination";
 
 const getAdminProducts = asyncHandler(async (req: MiddlewareRequest, res: Response) => {
     const user = req.user;
-    const { page } = req.params;
+    const { page } = req.query;
 
     if (!user) {
         throw new ApiError(500, "User not found")
     }
-
 
     const totalCount = await prisma.product.count();
     const paginationObject = pagination(totalCount, Number(page));
@@ -25,6 +24,10 @@ const getAdminProducts = asyncHandler(async (req: MiddlewareRequest, res: Respon
         },
         where: {
             providerId: user.id,
+        },
+        omit: {
+            createdAt: true,
+            providerId: true,
         }
     })
 
@@ -80,17 +83,28 @@ const updateProductByAdmin = asyncHandler(async (req: Request, res: Response) =>
 })
 
 const addProduct = asyncHandler(async (req: MiddlewareRequest, res: Response) => {
-    const { productName, sku } = req.body;
-    const user = req.user
+    const { name, sku } = req.body;
+    const user = req.user;
 
-    if (productName && sku) {
+    if (!(name && sku)) {
         throw new ApiError(400, 'All fields are required');
     }
 
+    const similarSKUProduct = await prisma.product.findFirst({
+        where: {
+            sku: sku,
+        }
+    });
+
+    if (similarSKUProduct) {
+        throw new ApiError(400, 'SKU Already Present');
+    }
+
     try {
+
         await prisma.product.create({
             data: {
-                name: productName,
+                name: name,
                 sku: sku,
                 provider: {
                     connect: { id: user?.id }

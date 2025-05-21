@@ -12,7 +12,7 @@ const pagination = (totalCount: number, page: number) => {
 
 
     return {
-        skip: page * limit,
+        skip: (page - 1) * limit,
         limit,
         totalPages,
         page
